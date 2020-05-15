@@ -459,7 +459,7 @@ bool Script::executeCommand(int index, MasterTimer* timer, QList<Universe *> uni
     {
         // Waiting for a key should break out of the execution loop to prevent
         // skipping straight to the next command. If there is no error in waitkey
-        // parsing,we must wait at least one cycle.
+        // parsing, we must wait at least one cycle.
         error = handleWaitKey(tokens);
         if (error.isEmpty() == true)
             continueLoop = false;
