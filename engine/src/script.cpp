@@ -55,7 +55,7 @@ const QString Script::jumpCmd = QString("jump");
 const QString Script::blackoutOn = QString("on");
 const QString Script::blackoutOff = QString("off");
 
-const QStringList knownKeywords(QStringList() << "ch" << "val" << "arg");
+const QStringList knownKeywords(QStringList() << "ch" << "val" << "arg" << "ifFlag");
 
 /****************************************************************************
  * Initialization
@@ -765,8 +765,21 @@ QString Script::handleJump(const QList<QStringList>& tokens)
 {
     qDebug() << Q_FUNC_INFO;
 
-    if (tokens.size() > 1)
+    if (tokens.size() > 2)
         return QString("Too many arguments");
+
+    // Check if this jump is conditional
+    if ((tokens.size() == 2) && (tokens[1][0] == "ifFlag") && (tokens[1].size() == 2) && (tokens[1][1].length()))
+    {
+        // Check if the flag to depend on is set
+        bool flagSet = doc()->isScriptFlagSet(tokens[1][1]);
+
+        // If it is NOT set, don't jump => do nothing
+        if (!flagSet)
+            return QString();
+
+        // If the flag is set, jump as if it were an unconditional jump
+    }
 
     if (m_labels.contains(tokens[0][1]) == true)
     {
