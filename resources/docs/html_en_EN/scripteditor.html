@@ -11,12 +11,13 @@
 <P>
 The Script Editor, as its name suggests, is used to edit
 <IMG SRC="qrc:/script.png" align="absmiddle"> <A HREF="file:concept.html#Script">Script</A> functions.<br>
-It basically consists in a text editor where the user can write a script using a meta-language with
+It basically consists of a text editor where the user can write a script using a meta-language with
 a syntax described below.<br>
 The script can be manually modified if you have a full understanding of the language syntax, otherwise
 a few helper buttons are available on the rightmost side of the editor to speed up and facilitate the
 script creation/editing.<br>
-Each line of a script will be executed by QLC+ in a sequential order.
+Each line of a script will be executed by QLC+ in a sequential order. However, using the
+<I>label</I> and <I>jump</I> commands, the flow can be changed.
 </P>
 
 <H3>Controls</H3>
@@ -189,7 +190,7 @@ blackout:off</PRE>
   <TD>systemcommand</TD>
   <TD>
     <B>Type</B>: keyword<br>
-    <B>Description</B>: execute a program or a script at the provided absolute path with the (optional) provided arguments.<br>
+    <B>Description</B>: Execute a program or a script at the provided absolute path with the (optional) provided arguments.<br>
     <B>Syntax</B>: systemcommand:programPath arg:arg1 arg:arg2 ... arg:argN<br><br>
     <I>programPath</I> is the absolute path of an executable program or script. For example "/usr/bin/vlc" or "C:\Tools\myTool.exe"<br>
     If the path to an executable contains spaces, it must be written between quotes.<br>
@@ -231,6 +232,72 @@ systemcommand:"C:\Program Files\Tools\My Tool.exe" arg:"D:\My Files\My file.txt"
 wait:03s.20 // Waits for 3 seconds and 200 milliseconds</PRE>
   </TD>
  </TR>
+
+ <TR>
+  <TD>setFlag</TD>
+  <TD>
+    <B>Type</B>: keyword<br>
+    <B>Description</B>: Sets a named flag that can be read from this or other scripts in the same project.<br>
+      Flags an either be set or not set, they don't store a value.<br>
+      If a flag is already set, this command has no effect.<br>
+      Flags can be used with the <I>ifFlag</I> condition of the <I>jump</I> command
+      to execute commands based on the state of <I>other</i> scripts.<br>
+      Set flags are automatically cleared when switching from <I>Design</I> mode to <I>Operate</I> mode
+      in order to have a clean, defined state and to avoid confusion.<br>
+    <B>Syntax</B>: setFlag:flagName<br><br>
+    <I>flagName</I> A user-defined name of the flag<br>
+    <B>Examples</B>:
+      <PRE>setFlag:chaserRunning // Sets a flag named <I>chaserRunning</I>
+setFlag:positionReached // Defines a label named <I>positionReached</I></PRE>
+  </TD>
+ </TR>
+ <TR>
+  <TD>clearFlag</TD>
+  <TD>
+    <B>Type</B>: keyword<br>
+    <B>Description</B>: Clears a named flag that was set by the <I>setFlag</I> command.<br>
+      If the flag is not set, this command has no effect. No error will be reported and the script<br>
+      will continue to run normally.<br>
+    <B>Syntax</B>: clearFlag:flagName<br><br>
+    <I>flagName</I> A user-defined name of the flag<br>
+    <B>Examples</B>:
+      <PRE>clearFlag:chaserRunning // Clears the flag named <I>chaserRunning</I>
+clearFlag:positionReached // Clears the label named <I>positionReached</I></PRE>
+  </TD>
+ </TR>
+ <TR>
+  <TD>label</TD>
+  <TD>
+    <B>Type</B>: keyword<br>
+    <B>Description</B>: Define a named label that can be jumped to using the <I>jump</I> command.<br>
+      Labels are only valid for the script in which they are defined, jumping between scripts does not work.<br>
+    <B>Syntax</B>: label:labelName<br><br>
+    <I>labelName</I> A user-defined name of the label<br>
+    <B>Examples</B>:
+      <PRE>label:head // Defines a label with the name <I>head</I>
+label:end // Defines a label with the name <I>end</I></PRE>
+  </TD>
+ </TR>
+ <TR>
+  <TD>jump</TD>
+  <TD>
+    <B>Type</B>: keyword<br>
+    <B>Description</B>: Jumps to a label defined in the same script.<br>
+      An optional parameter <I>ifFlag</I> can be given to make the jump conditional.<br>
+      Conditional jumps are useful if only one of several script functions shall be running<br>
+      and a currently running script shall not be interrupted by the newly triggered script.<br>
+      If the label given is not defined in the current script, the command has no effect and<br>
+      will continue with the next line.
+    <B>Syntax</B>: jump:labelName ifFlag:flagName<br><br>
+    <I>ifFlag</I> if this parameter is set, then the jump will only be done if the<br>
+      flag given by <I>flagName</I> has been set by this or another script.<br>
+      If the flag is not set, this command has no effect. No error will be reported and the script<br>
+      will continue to run normally.<br>
+    <B>Example</B>: <PRE>jump:end // Jump to the label <I>end</I> in this script
+jump:end ifFlag:chaserRunning // Jumps to the label <I>end</I> in this script if the flag <I>chaserRunning</I> is set</PRE>
+  </TD>
+ </TR>
+
  <TR>
   <TD>comments</TD>
   <TD>
