@@ -46,6 +46,9 @@ const QString Script::waitKeyCmd = QString("waitkey");
 const QString Script::setFixtureCmd = QString("setfixture");
 const QString Script::systemCmd = QString("systemcommand");
 
+const QString Script::setFlagCmd = QString("setflag");
+const QString Script::clearFlagCmd = QString("clearflag");
+
 const QString Script::labelCmd = QString("label");
 const QString Script::jumpCmd = QString("jump");
 
@@ -472,6 +475,14 @@ bool Script::executeCommand(int index, MasterTimer* timer, QList<Universe *> uni
     {
         error = handleSystemCommand(tokens);
     }
+    else if (tokens[0][0] == Script::setFlagCmd)
+    {
+        error = handleSetFlagCommand(tokens);
+    }
+    else if (tokens[0][0] == Script::clearFlagCmd)
+    {
+        error = handleClearFlagCommand(tokens);
+    }
     else if (tokens[0][0] == Script::labelCmd)
     {
         error = handleLabel(tokens);
@@ -710,6 +721,32 @@ QString Script::handleSystemCommand(const QList<QStringList> &tokens)
     QProcess *newProcess = new QProcess();
     newProcess->start(programName, programArgs);
 #endif
+    return QString();
+}
+
+QString Script::handleSetFlagCommand(const QList<QStringList> &tokens)
+{
+    qDebug() << Q_FUNC_INFO;
+
+    if (tokens.size() > 1)
+        return QString("Too many arguments");
+
+    if (tokens[0][1].length())
+        doc()->setScriptFlag(tokens[0][1]);
+
+    return QString();
+}
+
+QString Script::handleClearFlagCommand(const QList<QStringList> &tokens)
+{
+    qDebug() << Q_FUNC_INFO;
+
+    if (tokens.size() > 1)
+        return QString("Too many arguments");
+
+    if (tokens[0][1].length())
+        doc()->clearScriptFlag(tokens[0][1]);
+
     return QString();
 }
 

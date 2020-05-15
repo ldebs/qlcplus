@@ -598,6 +598,22 @@ public:
     MonitorProperties *monitorProperties();
 
     /*********************************************************************
+     * Script flag handling
+     *********************************************************************/
+public:
+    /** Sets a script flag */
+    void setScriptFlag(QString flagName);
+
+    /** Clears a script flag or does nothing if flag not set */
+    void clearScriptFlag(QString flagName);
+
+    /** Returns true if script flag is set */
+    bool isScriptFlagSet(QString flagName);
+
+private:
+    QStringList m_scriptFlags;
+
+    /*********************************************************************
      * Load & Save
      *********************************************************************/
 public:

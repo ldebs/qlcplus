@@ -53,6 +53,9 @@ public:
     static const QString setFixtureCmd;
     static const QString systemCmd;
 
+    static const QString setFlagCmd;
+    static const QString clearFlagCmd;
+
     static const QString labelCmd;
     static const QString jumpCmd;
 
@@ -224,6 +227,22 @@ private:
      * @return An empty string if successful. Otherwise an error string.
      */
     QString handleSystemCommand(const QList<QStringList>& tokens);
+
+    /**
+     * Handle "setflag" command.
+     *
+     * @param tokens A list of keyword:value pairs
+     * @return An empty string if successful. Otherwise an error string.
+     */
+    QString handleSetFlagCommand(const QList<QStringList>& tokens);
+
+    /**
+     * Handle "clearflag" command.
+     *
+     * @param tokens A list of keyword:value pairs
+     * @return An empty string if successful. Otherwise an error string.
+     */
+    QString handleClearFlagCommand(const QList<QStringList>& tokens);
 
     /**
      * Handle "label" command.

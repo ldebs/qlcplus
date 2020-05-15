@@ -347,6 +347,9 @@ void Doc::setMode(Doc::Mode mode)
             qWarning() << Q_FUNC_INFO << "Startup function does not exist, erasing. (" << m_startupFunctionId << ")";
             m_startupFunctionId = Function::invalidId();
         }
+
+        // Clear all script flags
+        m_scriptFlags.clear();
     }
 
     emit modeChanged(m_mode);
@@ -1204,6 +1207,25 @@ MonitorProperties *Doc::monitorProperties()
         m_monitorProps = new MonitorProperties();
 
     return m_monitorProps;
+}
+
+/*********************************************************************
+ * Script flag handling
+ *********************************************************************/
+
+void Doc::setScriptFlag(QString flagName)
+{
+    m_scriptFlags.append(flagName);
+}
+
+void Doc::clearScriptFlag(QString flagName)
+{
+    m_scriptFlags.removeAll(flagName);
+}
+
+bool Doc::isScriptFlagSet(QString flagName)
+{
+    return m_scriptFlags.contains(flagName);
 }
 
 /*****************************************************************************
